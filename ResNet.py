@@ -36,9 +36,9 @@ class ResidualBlock(nn.Module):
 class ResNet(nn.Module):  # 增加一个原数据到卷积网络的接口
     def __init__(self, ResidualBlock, num_classes=2):  # num_classes在分类问题中指类型数量,Net最后一层为15
         super(ResNet, self).__init__()
-        self.inchannel = 6
+        self.inchannel = 8
         self.layer0 = nn.Sequential(
-            nn.Linear(self.inchannel, 16),
+            nn.Linear(6, self.inchannel),
             # nn.Conv2d(in_channels, out_channels, kernel_size, stride=1, padding=0, dilation=1, groups=1, bias=True）     ori_para: 3，64
             # nn.Conv2d(3, 64, kernel_size=3, stride=1, padding=1, bias=False),    #kernel_size卷积核的长度
             # nn.BatchNorm2d(64),   #num_features     会输出num_features个值
@@ -46,11 +46,11 @@ class ResNet(nn.Module):  # 增加一个原数据到卷积网络的接口
             nn.LeakyReLU(),
 
         )  # 输入和输出均为64个数据
-        self.layer1 = self.make_layer(ResidualBlock, 16, 2, stride=1)  # 64->64   64->64
-        self.layer2 = self.make_layer(ResidualBlock, 32, 2, stride=2)  # 64->128   128->128
-        self.layer3 = self.make_layer(ResidualBlock, 64, 2, stride=2)  # 128->256     256->256
-        self.layer4 = self.make_layer(ResidualBlock, 128, 2, stride=2)  # 256->512    512->512
-        self.fc = nn.Linear(128, num_classes)  # 全连接层   512->15
+        self.layer1 = self.make_layer(ResidualBlock, 8, 2, stride=1)  # 64->64   64->64
+        self.layer2 = self.make_layer(ResidualBlock, 16, 2, stride=2)  # 64->128   128->128
+        self.layer3 = self.make_layer(ResidualBlock, 8, 2, stride=2)  # 128->256     256->256
+        self.layer4 = self.make_layer(ResidualBlock, 4, 2, stride=2)  # 256->512    512->512
+        self.fc = nn.Linear(4, num_classes)  # 全连接层   512->15
 
         self.dropout = nn.Dropout(p=0.5)  # 加一个dropout,防止过拟合
 
